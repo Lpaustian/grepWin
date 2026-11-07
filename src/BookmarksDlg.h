@@ -23,6 +23,23 @@
 #include <string>
 
 #define WM_BOOKMARK (WM_APP + 20)
+#define WM_BOOKMARK_SHORTCUT (WM_APP + 21)
+
+enum class BookmarkShortcutChangeType
+{
+    Assign,
+    Clear,
+    Rename,
+    Remove
+};
+
+struct BookmarkShortcutChange
+{
+    BookmarkShortcutChangeType type;
+    int                        slot;
+    std::wstring               oldName;
+    std::wstring               newName;
+};
 
 /**
  * bookmarks dialog.

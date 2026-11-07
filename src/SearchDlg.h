@@ -27,6 +27,7 @@
 #include "EditDoubleClick.h"
 #include "InfoRtfDialog.h"
 #include <string>
+#include <array>
 #include <vector>
 #include <set>
 #include <mutex>
@@ -119,6 +120,10 @@ protected:
     void        OpenFileAtListIndex(int listIndex);
     void        UpdateInfoLabel();
     bool        SaveSettings();
+    std::wstring LoadQuickSearchPreset(int slot) const;
+    void        SaveQuickSearchPreset(int slot, const std::wstring& preset);
+    void        RefreshQuickSearchButtons();
+    void        UpdatePresetControls();
     void        SaveWndPosition();
     static void formatDate(wchar_t dateNative[], const FILETIME& fileTime, bool forceShortFmt);
     bool        MatchPath(LPCTSTR pathBuf) const;
@@ -151,6 +156,7 @@ private:
     std::wstring                     m_searchPath;
     std::wstring                     m_searchString;
     std::wstring                     m_replaceString;
+    std::array<std::wstring, 3>      m_quickSearchPresets;
     std::vector<std::wstring>        m_patterns;
     std::wstring                     m_patternRegex;
     bool                             m_patternRegexC;

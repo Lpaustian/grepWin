@@ -169,6 +169,9 @@ BEGIN
     PUSHBUTTON      "Test regex",IDC_TESTREGEX,14,109,77,14
     PUSHBUTTON      "Add to Presets",IDC_ADDTOBOOKMARKS,108,109,76,14
     PUSHBUTTON      "Presets",IDC_BOOKMARKS,189,109,50,14
+    PUSHBUTTON      "-",IDC_QUICKSEARCH1,244,109,56,14
+    PUSHBUTTON      "-",IDC_QUICKSEARCH2,304,109,56,14
+    PUSHBUTTON      "-",IDC_QUICKSEARCH3,364,109,56,14
     CONTROL         "Treat files as binary",IDC_BINARY,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,432,98,134,10
     CONTROL         "Keep file date when replacing",IDC_KEEPFILEDATECHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,432,110,126,10
@@ -330,6 +333,16 @@ BEGIN
     BEGIN
         MENUITEM "Remo&ve Preset",              ID_REMOVEBOOKMARK
         MENUITEM "Re&name Preset",              ID_RENAMEBOOKMARK
+        POPUP "Quick Search Shortcuts"
+        BEGIN
+            MENUITEM "Assign to shortcut 1",    ID_ASSIGNBOOKMARKSHORTCUT1
+            MENUITEM "Assign to shortcut 2",    ID_ASSIGNBOOKMARKSHORTCUT2
+            MENUITEM "Assign to shortcut 3",    ID_ASSIGNBOOKMARKSHORTCUT3
+            MENUITEM SEPARATOR
+            MENUITEM "Clear shortcut 1",        ID_CLEARBOOKMARKSHORTCUT1
+            MENUITEM "Clear shortcut 2",        ID_CLEARBOOKMARKSHORTCUT2
+            MENUITEM "Clear shortcut 3",        ID_CLEARBOOKMARKSHORTCUT3
+        END
     END
 END
 

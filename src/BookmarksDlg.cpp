@@ -151,6 +151,23 @@ LRESULT CBookmarksDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 
 LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
 {
+    auto getSelectedBookmarkName = [this]() {
+        std::wstring name;
+        int          item = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
+        if (item >= 0)
+        {
+            auto   buffer = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
+            LVITEM lv     = {0};
+            lv.iItem      = item;
+            lv.mask       = LVIF_TEXT;
+            lv.pszText    = buffer.get();
+            lv.cchTextMax = MAX_PATH_NEW;
+            ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
+            name = buffer.get();
+        }
+        return name;
+    };
+
     switch (id)
     {
         case IDOK:
@@ -171,47 +188,59 @@ LRESULT CBookmarksDlg::DoCommand(int id, int /*msg*/)
         break;
         case ID_REMOVEBOOKMARK:
         {
-            int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
-            if (iItem >= 0)
+            auto name = getSelectedBookmarkName();
+            if (!name.empty())
             {
-                auto   buf    = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
-                LVITEM lv     = {0};
-                lv.iItem      = iItem;
-                lv.mask       = LVIF_TEXT;
-                lv.pszText    = buf.get();
-                lv.cchTextMax = MAX_PATH_NEW;
-                ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
-                m_bookmarks.RemoveBookmark(buf.get());
+                m_bookmarks.RemoveBookmark(name);
+                BookmarkShortcutChange change{BookmarkShortcutChangeType::Remove, 0, name, {}};
+                SendMessage(m_hParent, WM_BOOKMARK_SHORTCUT, 0, reinterpret_cast<LPARAM>(&change));
+                m_bookmarks.Save();
+                int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
                 ListView_DeleteItem(GetDlgItem(*this, IDC_BOOKMARKS), iItem);
             }
         }
         break;
         case ID_RENAMEBOOKMARK:
         {
-            int iItem = ListView_GetNextItem(GetDlgItem(*this, IDC_BOOKMARKS), -1, LVNI_SELECTED);
-            if (iItem >= 0)
+            auto oldName = getSelectedBookmarkName();
+            if (!oldName.empty())
             {
-                auto   buf    = std::make_unique<wchar_t[]>(MAX_PATH_NEW);
-                LVITEM lv     = {0};
-                lv.iItem      = iItem;
-                lv.mask       = LVIF_TEXT;
-                lv.pszText    = buf.get();
-                lv.cchTextMax = MAX_PATH_NEW;
-                ListView_GetItem(GetDlgItem(*this, IDC_BOOKMARKS), &lv);
                 CNameDlg nameDlg(*this);
-                nameDlg.SetName(buf.get());
+                nameDlg.SetName(oldName);
                 if (nameDlg.DoModal(hResource, IDD_NAME, *this) == IDOK)
                 {
-                    if (nameDlg.GetName().compare(buf.get()))
+                    if (nameDlg.GetName().compare(oldName))
                     {
-                        Bookmark bk = m_bookmarks.GetBookmark(buf.get());
+                        Bookmark bk = m_bookmarks.GetBookmark(oldName);
                         bk.Name     = nameDlg.GetName();
                         m_bookmarks.AddBookmark(bk);
-                        m_bookmarks.RemoveBookmark(buf.get());
+                        m_bookmarks.RemoveBookmark(oldName);
                         m_bookmarks.Save();
+                        BookmarkShortcutChange change{BookmarkShortcutChangeType::Rename, 0, oldName, bk.Name};
+                        SendMessage(m_hParent, WM_BOOKMARK_SHORTCUT, 0, reinterpret_cast<LPARAM>(&change));
                         InitBookmarks();
                     }
                 }
+            }
+        }
+        break;
+        case ID_ASSIGNBOOKMARKSHORTCUT1:
+        case ID_ASSIGNBOOKMARKSHORTCUT2:
+        case ID_ASSIGNBOOKMARKSHORTCUT3:
+        case ID_CLEARBOOKMARKSHORTCUT1:
+        case ID_CLEARBOOKMARKSHORTCUT2:
+        case ID_CLEARBOOKMARKSHORTCUT3:
+        {
+            const bool clear = id >= ID_CLEARBOOKMARKSHORTCUT1;
+            const int  slot  = clear ? id - ID_CLEARBOOKMARKSHORTCUT1 : id - ID_ASSIGNBOOKMARKSHORTCUT1;
+            auto       name  = getSelectedBookmarkName();
+            if (clear || !name.empty())
+            {
+                BookmarkShortcutChange change{clear ? BookmarkShortcutChangeType::Clear : BookmarkShortcutChangeType::Assign,
+                                              slot,
+                                              name,
+                                              {}};
+                SendMessage(m_hParent, WM_BOOKMARK_SHORTCUT, 0, reinterpret_cast<LPARAM>(&change));
             }
         }
         break;

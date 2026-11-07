@@ -203,9 +203,18 @@
 #define IDC_LF                          1094
 #define IDC_BOTH                        1095
 #define IDC_REPLACEINFOUNDFILES         1096
+#define IDC_QUICKSEARCH1                1097
+#define IDC_QUICKSEARCH2                1098
+#define IDC_QUICKSEARCH3                1099
 #define ID_REMOVEBOOKMARK               32771
 #define ID_DUMMY_RENAMEPRESET           32774
 #define ID_RENAMEBOOKMARK               32775
+#define ID_ASSIGNBOOKMARKSHORTCUT1      32776
+#define ID_ASSIGNBOOKMARKSHORTCUT2      32777
+#define ID_ASSIGNBOOKMARKSHORTCUT3      32778
+#define ID_CLEARBOOKMARKSHORTCUT1       32779
+#define ID_CLEARBOOKMARKSHORTCUT2       32780
+#define ID_CLEARBOOKMARKSHORTCUT3       32781
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -214,8 +223,8 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        141
-#define _APS_NEXT_COMMAND_VALUE         32776
-#define _APS_NEXT_CONTROL_VALUE         1097
+#define _APS_NEXT_COMMAND_VALUE         32782
+#define _APS_NEXT_CONTROL_VALUE         1100
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
