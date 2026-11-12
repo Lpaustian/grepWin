@@ -56,6 +56,10 @@ LRESULT CRegexTestDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 
             InitDialog(hwndDlg, IDI_GREPWIN);
             CLanguage::Instance().TranslateWindow(*this);
+            // Same as search and replace dialog, replace the default font with a fixed width font for the regex test dialog
+            const auto regexFont = reinterpret_cast<WPARAM>(GetStockObject(ANSI_FIXED_FONT));
+            SendDlgItemMessage(hwndDlg, IDC_SEARCHTEXT, WM_SETFONT, regexFont, TRUE);
+            SendDlgItemMessage(hwndDlg, IDC_REPLACETEXT, WM_SETFONT, regexFont, TRUE);
             // initialize the controls
             SetDlgItemText(hwndDlg, IDC_SEARCHTEXT, m_searchText.c_str());
             SetDlgItemText(hwndDlg, IDC_REPLACETEXT, m_replaceText.c_str());

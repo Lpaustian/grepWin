@@ -459,6 +459,12 @@ LRESULT CSearchDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
     {
         case WM_INITDIALOG:
         {
+            // Replace serach and replacement expression font with fixed width font for better readability of regex expressions
+            const auto regexFont = reinterpret_cast<WPARAM>(GetStockObject(ANSI_FIXED_FONT));
+            SendDlgItemMessage(hwndDlg, IDC_SEARCHTEXT, WM_SETFONT, regexFont, TRUE);
+            SendDlgItemMessage(hwndDlg, IDC_REPLACETEXT, WM_SETFONT, regexFont, TRUE);
+
+
             SHAutoComplete(GetDlgItem(*this, IDC_SEARCHPATH), SHACF_FILESYSTEM | SHACF_AUTOSUGGEST_FORCE_ON);
 
             m_autoCompleteFilePatterns.Load(L"Software\\grepWin\\History", L"FilePattern");

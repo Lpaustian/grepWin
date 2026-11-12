@@ -64,6 +64,9 @@ LRESULT CMultiLineEditDlg::DlgFunc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARA
 
             InitDialog(hwndDlg, IDI_GREPWIN);
             CLanguage::Instance().TranslateWindow(*this);
+            // replace default font with a fixed width font for editing expressions across multiple lines
+            const auto regexFont = reinterpret_cast<WPARAM>(GetStockObject(ANSI_FIXED_FONT));
+            SendDlgItemMessage(hwndDlg, IDC_TEXTCONTENT, WM_SETFONT, regexFont, TRUE);
             // initialize the controls
             if (!m_forRegex)
             {
